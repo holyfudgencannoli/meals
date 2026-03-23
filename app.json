@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "meals",
+    "name": "Meals",
     "slug": "meals",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/android/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
     "scheme": "meals",
@@ -26,11 +26,12 @@
     },
     "plugins": [
       "expo-router",
+      "./withNotifeeConfig.js",
       [
         "expo-splash-screen",
         {
           "image": "./assets/android/res/mipmap-xxhdpi/ic_launcher.png",
-          // "imageWidth": 420,
+          "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#489e2e",
           "dark": {

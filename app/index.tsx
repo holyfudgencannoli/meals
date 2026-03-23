@@ -5,10 +5,21 @@
 import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
 import { Button, Text, useTheme } from "@rneui/themed";
 import { Link } from "expo-router";
+import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+	const [timestamps, setTimestamps] = useState<number[]>([]);
+
+
+	const xyz = useCallback(async () => {
+		const result = await notifee.getTriggerNotifications();
+		// Get unique timestamps from scheduled notifications
+		const uniqueTimestamps = Array.from(new Set(result.map(n => n.trigger.timestamp)));
+		setTimestamps(uniqueTimestamps);
+		return uniqueTimestamps;
+	}, []);
 
 	async function requestPermission() {
 		await notifee.requestPermission();
@@ -21,24 +32,113 @@ export default function HomeScreen() {
 		});
 	};
 
-	const trigger: TimestampTrigger = {
-		type: TriggerType.TIMESTAMP,
-		timestamp: Date.now() + 60 * 1000, // 1 minute from now
+	const trigger: (timestamp: number) => TimestampTrigger = (timestamp: number): TimestampTrigger => {
+		return {
+			type: TriggerType.TIMESTAMP,
+			timestamp: timestamp,
+		}
 	}
 
-	const displyScheduled = async () => {
-		await notifee.createTriggerNotification({
-			title: 'Reminder',
-			body: 'Your scheduled event',
-			android: {
-				channelId: 'default',
-			},
-		},
-		trigger);
+	const breakfastNotify = async () => {
+		// Calculate tomorrow's 8:00 AM timestamp
+		const now = new Date();
+		const tomorrow = new Date(now);
+		tomorrow.setDate(now.getDate() + 1);
+		tomorrow.setHours(8, 0, 0, 0);
+		const timestamp = tomorrow.getTime();
+		const scheduledTimestamps = await xyz();
+		if (scheduledTimestamps.includes(timestamp)) {
+			console.log('Breakfast notification already scheduled for tomorrow');
+			return;
+		} else {
+			console.log('Scheduling breakfast notification for tomorrow');
+			await requestPermission();
+			const channelId = await notifee.createChannel({
+				id: 'default',
+				name: 'Default Channel',
+			});
+			await notifee.createTriggerNotification({
+				title: 'Breakfast Time!',
+				body: "If you're having breakfast, log it in the app to keep track of your meals and nutrition.",
+				android: {
+					channelId,
+				},
+			}, trigger(timestamp));
+			console.log('Notification scheduled for Breakfast Tomorrow');
+		}
 	}
 
-	requestPermission()
+	const lunchNotify = async () => {
+		// Calculate tomorrow's 12:00 PM timestamp
+		const now = new Date();
+		const tomorrow = new Date(now);
+		tomorrow.setDate(now.getDate() + 1);
+		tomorrow.setHours(12, 0, 0, 0);
+		const timestamp = tomorrow.getTime();
+		const scheduledTimestamps = await xyz();
+		if (scheduledTimestamps.includes(timestamp)) {
+			console.log('Lunch notification already scheduled for tomorrow');
+			return;
+		} else {
+			console.log('Scheduling lunch notification for tomorrow');
+			await requestPermission();
+			const channelId = await notifee.createChannel({
+				id: 'default',
+				name: 'Default Channel',
+			});
+			await notifee.createTriggerNotification({
+				title: 'Lunch Time!',
+				body: "If you're having lunch, log it in the app to keep track of your meals and nutrition.",
+				android: {
+					channelId,
+				},
+			}, trigger(timestamp));
+			console.log('Notification scheduled for Lunch Tomorrow');
+		}
+	}
 
+	const dinnerNotify = async () => {
+		// Calculate tomorrow's 6:00 PM timestamp
+		const now = new Date();
+		const tomorrow = new Date(now);
+		tomorrow.setDate(now.getDate() + 1);
+		tomorrow.setHours(18, 0, 0, 0);
+		const timestamp = tomorrow.getTime();
+		const scheduledTimestamps = await xyz();
+		if (scheduledTimestamps.includes(timestamp)) {
+			console.log('Dinner notification already scheduled for tomorrow');
+			return;
+		} else {
+			console.log('Scheduling dinner notification for tomorrow');
+			await requestPermission();
+			const channelId = await notifee.createChannel({
+				id: 'default',
+				name: 'Default Channel',
+			});
+			await notifee.createTriggerNotification({
+				title: 'Dinner Time!',
+				body: "If you're having dinner, log it in the app to keep track of your meals and nutrition.",
+				android: {
+					channelId,
+				},
+			}, trigger(timestamp));
+			console.log('Notification scheduled for Dinner Tomorrow');
+		}
+	}
+
+	useEffect(() => {
+		xyz();
+		setTimeout(() => {
+			breakfastNotify();
+			setTimeout(() => {
+				lunchNotify();
+				setTimeout(() => {
+					dinnerNotify();
+				}, 1000);
+			}, 1000);
+		}, 1000);
+		
+	}, [])
 
 	const window = useWindowDimensions()
     // const { dark, colors, fonts } = useTheme()
@@ -100,12 +200,6 @@ export default function HomeScreen() {
 						<Button 
 							onPress={() => console.log("Pressed!")}
 							title="New Meal Entry"
-							type="solid"
-							
-						/>
-						<Button 
-							onPress={displyScheduled}
-							title="Notification"
 							type="solid"
 							
 						/>
