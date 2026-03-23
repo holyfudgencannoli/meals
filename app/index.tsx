@@ -2,12 +2,44 @@
 // import { Shades } from "@/config/LightTheme";
 // import { colors } from "@/config/theme";
 // import { useTheme } from "@/hooks/useTheme";
+import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
 import { Button, Text, useTheme } from "@rneui/themed";
 import { Link } from "expo-router";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+
+	async function requestPermission() {
+		await notifee.requestPermission();
+	}
+
+	const display = async () => {
+		await notifee.displayNotification({
+			title: 'Hello',
+			body: 'This is a Notifee notification!',
+		});
+	};
+
+	const trigger: TimestampTrigger = {
+		type: TriggerType.TIMESTAMP,
+		timestamp: Date.now() + 60 * 1000, // 1 minute from now
+	}
+
+	const displyScheduled = async () => {
+		await notifee.createTriggerNotification({
+			title: 'Reminder',
+			body: 'Your scheduled event',
+			android: {
+				channelId: 'default',
+			},
+		},
+		trigger);
+	}
+
+	requestPermission()
+
+
 	const window = useWindowDimensions()
     // const { dark, colors, fonts } = useTheme()
     // const shades = Shades
@@ -68,6 +100,12 @@ export default function HomeScreen() {
 						<Button 
 							onPress={() => console.log("Pressed!")}
 							title="New Meal Entry"
+							type="solid"
+							
+						/>
+						<Button 
+							onPress={displyScheduled}
+							title="Notification"
 							type="solid"
 							
 						/>

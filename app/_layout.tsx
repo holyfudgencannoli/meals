@@ -60,9 +60,7 @@ export default function RootLayout() {
   })
 
   setVisibilityAsync('hidden')
-  
 
-    
 	const handleInit = async (db: SQLiteDatabase) => {
     console.log("Initializing...")
 		try {

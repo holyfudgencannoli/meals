@@ -30,25 +30,12 @@
         "expo-splash-screen",
         {
           "image": "./assets/android/res/mipmap-xxhdpi/ic_launcher.png",
-          "imageWidth": 420,
+          // "imageWidth": 420,
           "resizeMode": "contain",
           "backgroundColor": "#489e2e",
           "dark": {
             "backgroundColor": "#377823"
           }
-        }
-      ],
-      [
-        "expo-notifications",
-        {
-          "icon": "./local/assets/android/res/mipmap-mdpi/ic_launcher_monochrome.png",
-          "color": "#ffffff",
-          "defaultChannel": "default",
-          "sounds": [
-            "./local/assets/notification_sound.wav",
-            "./local/assets/notification_sound_other.wav"
-          ],
-          "enableBackgroundRemoteNotifications": false
         }
       ],
       "expo-font",
