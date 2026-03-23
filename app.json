@@ -38,6 +38,19 @@
           }
         }
       ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./local/assets/android/res/mipmap-mdpi/ic_launcher_monochrome.png",
+          "color": "#ffffff",
+          "defaultChannel": "default",
+          "sounds": [
+            "./local/assets/notification_sound.wav",
+            "./local/assets/notification_sound_other.wav"
+          ],
+          "enableBackgroundRemoteNotifications": false
+        }
+      ],
       "expo-font",
       "expo-image",
       "expo-sqlite",
